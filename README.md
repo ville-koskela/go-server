@@ -14,6 +14,16 @@ project root-folder and run command:
 asdf install
 ```
 
+## Githooks
+
+You can add `.githooks` directory to your hooks path by running command:
+
+```
+git config core.hooksPath .githooks
+```
+
+This way you will run formatting before committing any code.
+
 ## Running tests
 
 To run tests, simply run:
