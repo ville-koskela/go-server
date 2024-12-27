@@ -73,6 +73,9 @@ func (db *InMemoryDatabase) ListComments(postID int64) ([]models.Comment, error)
 	if !exists {
 		return nil, nil
 	}
+	sort.Slice(comments, func(i, j int) bool {
+		return comments[i].ID < comments[j].ID
+	})
 	return comments, nil
 }
 

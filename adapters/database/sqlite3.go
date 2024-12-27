@@ -24,13 +24,13 @@ func NewSQLiteDatabase(dataSourceName string) (*SQLiteDatabase, error) {
 	_, err = db.Exec(`
         CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nick TEXT,
+            name TEXT,
             content TEXT
         );
         CREATE TABLE IF NOT EXISTS comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             post_id INTEGER,
-						nick TEXT,
+						name TEXT,
             content TEXT,
             FOREIGN KEY(post_id) REFERENCES posts(id)
         );
@@ -46,7 +46,7 @@ func (db *SQLiteDatabase) SavePost(post *models.Post) (models.Post, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	result, err := db.db.Exec("INSERT INTO posts (nick, content) VALUES (?, ?)", post.Nick, post.Content)
+	result, err := db.db.Exec("INSERT INTO posts (name, content) VALUES (?, ?)", post.Name, post.Content)
 	if err != nil {
 		return models.Post{}, err
 	}
@@ -64,7 +64,7 @@ func (db *SQLiteDatabase) ListPosts() ([]models.Post, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	rows, err := db.db.Query("SELECT id, nick, content FROM posts ORDER BY id DESC")
+	rows, err := db.db.Query("SELECT id, name, content FROM posts ORDER BY id DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (db *SQLiteDatabase) ListPosts() ([]models.Post, error) {
 	var posts []models.Post
 	for rows.Next() {
 		var post models.Post
-		if err := rows.Scan(&post.ID, &post.Nick, &post.Content); err != nil {
+		if err := rows.Scan(&post.ID, &post.Name, &post.Content); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
@@ -87,7 +87,7 @@ func (db *SQLiteDatabase) GetPost(id int64) (models.Post, error) {
 	defer db.mu.Unlock()
 
 	var post models.Post
-	err := db.db.QueryRow("SELECT id, nick, content FROM posts WHERE id = ?", id).Scan(&post.ID, &post.Nick, &post.Content)
+	err := db.db.QueryRow("SELECT id, name, content FROM posts WHERE id = ?", id).Scan(&post.ID, &post.Name, &post.Content)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return models.Post{}, errors.New("post not found")
@@ -102,7 +102,7 @@ func (db *SQLiteDatabase) SaveComment(comment *models.Comment) (models.Comment, 
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	result, err := db.db.Exec("INSERT INTO comments (post_id, nick, content) VALUES (?, ?, ?)", comment.PostID, comment.Nick, comment.Content)
+	result, err := db.db.Exec("INSERT INTO comments (post_id, name, content) VALUES (?, ?, ?)", comment.PostID, comment.Name, comment.Content)
 	if err != nil {
 		return models.Comment{}, err
 	}
@@ -120,7 +120,7 @@ func (db *SQLiteDatabase) ListComments(postID int64) ([]models.Comment, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	rows, err := db.db.Query("SELECT id, post_id, nick, content FROM comments WHERE post_id = ?", postID)
+	rows, err := db.db.Query("SELECT id, post_id, name, content FROM comments WHERE post_id = ? ORDER BY id", postID)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func (db *SQLiteDatabase) ListComments(postID int64) ([]models.Comment, error) {
 	var comments []models.Comment
 	for rows.Next() {
 		var comment models.Comment
-		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.Nick, &comment.Content); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.PostID, &comment.Name, &comment.Content); err != nil {
 			return nil, err
 		}
 		comments = append(comments, comment)

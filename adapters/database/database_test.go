@@ -44,12 +44,13 @@ func TestDatabase_SavePost(t *testing.T) {
 			db := td.setupDB()
 			defer db.Close()
 
-			post := &models.Post{Content: "Test Post"}
+			post := &models.Post{Content: "Test Post", Name: "Test Name"}
 			savedPost, err := db.SavePost(post)
 
 			test.Assert(t, nil, err)
 			test.Assert(t, int64(1), savedPost.ID)
 			test.Assert(t, "Test Post", savedPost.Content)
+			test.Assert(t, "Test Name", savedPost.Name)
 		})
 	}
 }
@@ -71,8 +72,8 @@ func TestDatabase_ListPosts(t *testing.T) {
 
 			test.Assert(t, nil, err)
 			test.Assert(t, 2, len(posts))
-			test.Assert(t, "Test Post 1", posts[1].Content)
 			test.Assert(t, "Test Post 2", posts[0].Content)
+			test.Assert(t, "Test Post 1", posts[1].Content)
 		})
 	}
 }
@@ -133,8 +134,8 @@ func TestInMemoryDatabase_ListComments(t *testing.T) {
 			post := &models.Post{Content: "Test Post"}
 			savedPost, _ := db.SavePost(post)
 
-			comment1 := &models.Comment{PostID: savedPost.ID, Content: "Test Comment 1"}
-			comment2 := &models.Comment{PostID: savedPost.ID, Content: "Test Comment 2"}
+			comment1 := &models.Comment{PostID: savedPost.ID, Content: "Test Comment 1", Name: "Test Name 1"}
+			comment2 := &models.Comment{PostID: savedPost.ID, Content: "Test Comment 2", Name: "Test Name 2"}
 			db.SaveComment(comment1)
 			db.SaveComment(comment2)
 
@@ -144,6 +145,8 @@ func TestInMemoryDatabase_ListComments(t *testing.T) {
 			test.Assert(t, 2, len(comments))
 			test.Assert(t, "Test Comment 1", comments[0].Content)
 			test.Assert(t, "Test Comment 2", comments[1].Content)
+			test.Assert(t, "Test Name 1", comments[0].Name)
+			test.Assert(t, "Test Name 2", comments[1].Name)
 
 			_, err = db.ListComments(999)
 			test.Assert(t, nil, err)
