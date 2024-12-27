@@ -8,11 +8,13 @@ import (
 const (
 	DEFAULT_PORT    = 8080
 	DEFAULT_DB_TYPE = "inmemory"
+	DEFAULT_DB_PATH = "file:db.sqlite3"
 )
 
 type Env struct {
 	serverPort string
 	dbType     string
+	dbPath     string
 }
 
 func NewEnv() *Env {
@@ -38,4 +40,9 @@ func (e *Env) GetDBType() string {
 	}
 
 	return e.dbType
+}
+
+// Currently always return hardcoded value
+func (e *Env) GetDBPath() string {
+	return DEFAULT_DB_PATH
 }

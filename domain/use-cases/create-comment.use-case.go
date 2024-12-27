@@ -3,15 +3,14 @@ package usecases
 import (
 	"errors"
 
-	"web1/domain/interfaces"
 	"web1/domain/models"
 )
 
 type CreateCommentUseCase struct {
-	db interfaces.IDatabase
+	db Database
 }
 
-func NewCreateCommentUseCase(db interfaces.IDatabase) *CreateCommentUseCase {
+func NewCreateCommentUseCase(db Database) *CreateCommentUseCase {
 	return &CreateCommentUseCase{db: db}
 }
 

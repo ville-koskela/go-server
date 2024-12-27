@@ -4,44 +4,28 @@ import (
 	"errors"
 	"testing"
 
-	"web1/domain/interfaces"
 	"web1/domain/models"
 	"web1/test"
 )
 
-type TestDatabase struct {
-	name    string
-	setupDB func() interfaces.IDatabase
+var dbTypes = []string{"inmemory", "sqlite3"}
+
+type MockEnv struct {
+	dbType string
 }
 
-func setupInMemoryDatabase() interfaces.IDatabase {
-	db, _ := NewInMemoryDatabase()
-
-	return db
+func (env MockEnv) GetDBType() string {
+	return env.dbType
 }
 
-func setupSQLiteDatabase() interfaces.IDatabase {
-	db, err := NewSQLiteDatabase(":memory:")
-	if err != nil {
-		panic(err)
-	}
-
-	return db
-}
-
-func setupDatabases() []TestDatabase {
-	return []TestDatabase{
-		{"InMemoryDatabase", setupInMemoryDatabase},
-		{"SQLiteDatabase", setupSQLiteDatabase},
-	}
+func (env MockEnv) GetDBPath() string {
+	return ":memory:"
 }
 
 func TestDatabase_SavePost(t *testing.T) {
-	testDatabases := setupDatabases()
-
-	for _, td := range testDatabases {
-		t.Run(td.name, func(t *testing.T) {
-			db := td.setupDB()
+	for _, dbType := range dbTypes {
+		t.Run(dbType, func(t *testing.T) {
+			db := InitializeDatabase(MockEnv{dbType: dbType})
 			defer db.Close()
 
 			post := &models.Post{Content: "Test Post", Name: "Test Name"}
@@ -56,11 +40,9 @@ func TestDatabase_SavePost(t *testing.T) {
 }
 
 func TestDatabase_ListPosts(t *testing.T) {
-	testDatabases := setupDatabases()
-
-	for _, td := range testDatabases {
-		t.Run(td.name, func(t *testing.T) {
-			db := td.setupDB()
+	for _, dbType := range dbTypes {
+		t.Run(dbType, func(t *testing.T) {
+			db := InitializeDatabase(MockEnv{dbType: dbType})
 			defer db.Close()
 
 			post1 := &models.Post{Content: "Test Post 1"}
@@ -79,11 +61,9 @@ func TestDatabase_ListPosts(t *testing.T) {
 }
 
 func TestDatabase_GetPost(t *testing.T) {
-	testDatabases := setupDatabases()
-
-	for _, td := range testDatabases {
-		t.Run(td.name, func(t *testing.T) {
-			db := td.setupDB()
+	for _, dbType := range dbTypes {
+		t.Run(dbType, func(t *testing.T) {
+			db := InitializeDatabase(MockEnv{dbType: dbType})
 			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}
@@ -102,11 +82,9 @@ func TestDatabase_GetPost(t *testing.T) {
 }
 
 func TestDatabase_SaveComment(t *testing.T) {
-	testdatabases := setupDatabases()
-
-	for _, td := range testdatabases {
-		t.Run(td.name, func(t *testing.T) {
-			db := td.setupDB()
+	for _, dbType := range dbTypes {
+		t.Run(dbType, func(t *testing.T) {
+			db := InitializeDatabase(MockEnv{dbType: dbType})
 			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}
@@ -124,11 +102,9 @@ func TestDatabase_SaveComment(t *testing.T) {
 }
 
 func TestInMemoryDatabase_ListComments(t *testing.T) {
-	testDatabases := setupDatabases()
-
-	for _, td := range testDatabases {
-		t.Run(td.name, func(t *testing.T) {
-			db := td.setupDB()
+	for _, dbType := range dbTypes {
+		t.Run(dbType, func(t *testing.T) {
+			db := InitializeDatabase(MockEnv{dbType: dbType})
 			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}

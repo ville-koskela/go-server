@@ -3,15 +3,14 @@ package usecases
 import (
 	"errors"
 
-	"web1/domain/interfaces"
 	"web1/domain/models"
 )
 
 type GetPostUseCase struct {
-	db interfaces.IDatabase
+	db Database
 }
 
-func NewGetPostUseCase(db interfaces.IDatabase) *GetPostUseCase {
+func NewGetPostUseCase(db Database) *GetPostUseCase {
 	return &GetPostUseCase{db: db}
 }
 

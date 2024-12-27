@@ -1,17 +1,21 @@
 package database
 
 import (
-	"web1/domain/interfaces"
+	"web1/domain/use-cases"
 )
 
-func InitializeDatabase(env interfaces.IEnv) interfaces.IDatabase {
+type Database interface {
+	usecases.Database
+	Close() error
+}
+
+func InitializeDatabase(env Env) Database {
 	switch env.GetDBType() {
 	case "inmemory":
 		db, _ := NewInMemoryDatabase()
 		return db
 	case "sqlite", "sqlite3":
-		// Currently the database file is hardcoded
-		db, err := NewSQLiteDatabase("file:db.sqlite3")
+		db, err := NewSQLiteDatabase(env.GetDBPath())
 		if err != nil {
 			panic(err)
 		}
