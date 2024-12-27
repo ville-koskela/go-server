@@ -5,21 +5,16 @@ import (
 	"net/http"
 
 	"web1/adapters/database"
+	"web1/adapters/env"
 	"web1/domain/use-cases"
 	"web1/routes"
 )
 
 func main() {
-	port := 8080
+	env := environment.NewEnv()
 
 	// initialize the database
-	db, err := database.NewInMemoryDatabase()
-	//db, err := database.NewSQLiteDatabase("file:db.sqlite3")
-
-	if err != nil {
-		fmt.Printf("Error opening database: %v\n", err)
-		return
-	}
+	db := database.InitializeDatabase(env)
 
 	// initialize use-cases
 	createPost := usecases.NewCreatePostUseCase(db)
@@ -27,10 +22,12 @@ func main() {
 	getPost := usecases.NewGetPostUseCase(db)
 	createComment := usecases.NewCreateCommentUseCase(db)
 
+	// create routes
 	http.HandleFunc("/posts", routes.Posts(createPost, listPosts))
 	http.HandleFunc("/posts/", routes.Post(getPost))
 	http.HandleFunc("/comments", routes.Comments(createComment))
 
+	port := env.GetServerPort()
 	fmt.Printf("Starting server on port %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
