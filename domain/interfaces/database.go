@@ -10,5 +10,5 @@ type IDatabase interface {
 	GetPost(id int64) (models.Post, error)
 	SaveComment(comment *models.Comment) (models.Comment, error)
 	ListComments(postID int64) ([]models.Comment, error)
-	Close() (error)
+	Close() error
 }

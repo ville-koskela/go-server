@@ -14,12 +14,12 @@ func main() {
 
 	// initialize the database
 	db, err := database.NewInMemoryDatabase()
-    //db, err := database.NewSQLiteDatabase("file:db.sqlite3")
-    
-    if err != nil {
-        fmt.Printf("Error opening database: %v\n", err)
-        return
-    }
+	//db, err := database.NewSQLiteDatabase("file:db.sqlite3")
+
+	if err != nil {
+		fmt.Printf("Error opening database: %v\n", err)
+		return
+	}
 
 	// initialize use-cases
 	createPost := usecases.NewCreatePostUseCase(db)
