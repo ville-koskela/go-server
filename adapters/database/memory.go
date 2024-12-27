@@ -8,17 +8,17 @@ import (
 )
 
 type InMemoryDatabase struct {
-	posts    map[int]models.Post
-	comments map[int][]models.Comment
-	postID   int
-	commentID int
+	posts    map[int64]models.Post
+	comments map[int64][]models.Comment
+	postID   int64
+	commentID int64
 	mu       sync.Mutex
 }
 
 func NewInMemoryDatabase() *InMemoryDatabase {
 	return &InMemoryDatabase{
-		posts:    make(map[int]models.Post),
-		comments: make(map[int][]models.Comment),
+		posts:    make(map[int64]models.Post),
+		comments: make(map[int64][]models.Comment),
 		postID:   0,
 		commentID: 0,
 	}
@@ -43,7 +43,7 @@ func (db *InMemoryDatabase) ListPosts() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (db *InMemoryDatabase) GetPost(id int) (models.Post, error) {
+func (db *InMemoryDatabase) GetPost(id int64) (models.Post, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 	post, exists := db.posts[id]
@@ -62,7 +62,7 @@ func (db *InMemoryDatabase) SaveComment(comment *models.Comment) (models.Comment
 	return *comment, nil
 }
 
-func (db *InMemoryDatabase) ListComments(postID int) ([]models.Comment, error) {
+func (db *InMemoryDatabase) ListComments(postID int64) ([]models.Comment, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 	comments, exists := db.comments[postID]
