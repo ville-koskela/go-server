@@ -42,3 +42,13 @@ To format the code after making changes, run `gofmt -w .` in the project root.
 
 To build the app, simply run `go build .` in the project root. After that you can run the app by simply running
 `./web1`. Currently the app responds from port `8080`.
+
+## Changing settings
+
+You can use env-variables to change settings in the app. Currently app supports setting the port it listens
+to via environmental variable and also the database type. Variable table is below.
+
+| Variable name | Variable description |
+|---------------|–---------------------|
+| SERVER_PORT | Defines the port the server binds to and starts to listen for requests |
+| DB_TYPE | Currently we support `inmemory` and `sqlite`/`sqlite3` as a database type |
