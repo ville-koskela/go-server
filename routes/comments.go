@@ -1,22 +1,22 @@
-package routes 
+package routes
 
 import (
-    "encoding/json"
-    "io/ioutil"
-    "net/http"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
 
-    "web1/domain/use-cases"
-    "web1/domain/models"
+	"web1/domain/models"
+	"web1/domain/use-cases"
 )
 
 func Comments(createComment *usecases.CreateCommentUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
-			case http.MethodPost:
-				handleNewCommentRequest(w, r, createComment)
-			default:
-				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			}
+		case http.MethodPost:
+			handleNewCommentRequest(w, r, createComment)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
 	}
 }
 

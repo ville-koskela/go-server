@@ -16,7 +16,7 @@ func NewCreateCommentUseCase(db interfaces.IDatabase) *CreateCommentUseCase {
 }
 
 func (createComment *CreateCommentUseCase) Execute(comment *models.Comment) (models.Comment, error) {
-  _, err := createComment.db.GetPost(comment.PostID)
+	_, err := createComment.db.GetPost(comment.PostID)
 
 	if err != nil {
 		return models.Comment{}, errors.New("Post not found")

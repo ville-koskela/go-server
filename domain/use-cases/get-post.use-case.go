@@ -7,7 +7,7 @@ import (
 	"web1/domain/models"
 )
 
-type GetPostUseCase struct  {
+type GetPostUseCase struct {
 	db interfaces.IDatabase
 }
 

@@ -8,18 +8,18 @@ import (
 )
 
 type InMemoryDatabase struct {
-	posts    map[int64]models.Post
-	comments map[int64][]models.Comment
-	postID   int64
+	posts     map[int64]models.Post
+	comments  map[int64][]models.Comment
+	postID    int64
 	commentID int64
-	mu       sync.Mutex
+	mu        sync.Mutex
 }
 
 func NewInMemoryDatabase() *InMemoryDatabase {
 	return &InMemoryDatabase{
-		posts:    make(map[int64]models.Post),
-		comments: make(map[int64][]models.Comment),
-		postID:   0,
+		posts:     make(map[int64]models.Post),
+		comments:  make(map[int64][]models.Comment),
+		postID:    0,
 		commentID: 0,
 	}
 }

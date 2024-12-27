@@ -1,6 +1,5 @@
 package usecases
 
-
 import (
 	"errors"
 
