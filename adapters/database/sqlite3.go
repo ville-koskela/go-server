@@ -137,3 +137,7 @@ func (db *SQLiteDatabase) ListComments(postID int64) ([]models.Comment, error) {
 
 	return comments, nil
 }
+
+func (db *SQLiteDatabase) Close() error {
+	return db.db.Close()
+}

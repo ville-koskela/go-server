@@ -75,3 +75,7 @@ func (db *InMemoryDatabase) ListComments(postID int64) ([]models.Comment, error)
 	}
 	return comments, nil
 }
+
+func (db *InMemoryDatabase) Close() error {
+	return nil
+}

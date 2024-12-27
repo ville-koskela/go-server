@@ -40,6 +40,7 @@ func TestDatabase_SavePost(t *testing.T) {
 	for _, td := range testDatabases {
 		t.Run(td.name, func(t *testing.T) {
 			db := td.setupDB()
+			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}
 			savedPost, err := db.SavePost(post)
@@ -57,6 +58,7 @@ func TestDatabase_ListPosts(t *testing.T) {
 	for _, td := range testDatabases {
 		t.Run(td.name, func(t *testing.T) {
 			db := td.setupDB()
+			defer db.Close()
 
 			post1 := &models.Post{Content: "Test Post 1"}
 			post2 := &models.Post{Content: "Test Post 2"}
@@ -79,6 +81,7 @@ func TestDatabase_GetPost(t *testing.T) {
 	for _, td := range testDatabases {
 		t.Run(td.name, func(t *testing.T) {
 			db := td.setupDB()
+			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}
 			savedPost, _ := db.SavePost(post)
@@ -101,6 +104,7 @@ func TestDatabase_SaveComment(t *testing.T) {
 	for _, td := range testdatabases {
 		t.Run(td.name, func(t *testing.T) {
 			db := td.setupDB()
+			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}
 			savedPost, _ := db.SavePost(post)
@@ -122,6 +126,7 @@ func TestInMemoryDatabase_ListComments(t *testing.T) {
 	for _, td := range testDatabases {
 		t.Run(td.name, func(t *testing.T) {
 			db := td.setupDB()
+			defer db.Close()
 
 			post := &models.Post{Content: "Test Post"}
 			savedPost, _ := db.SavePost(post)
