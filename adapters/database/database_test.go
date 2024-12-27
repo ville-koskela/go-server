@@ -15,7 +15,9 @@ type TestDatabase struct {
 }
 
 func setupInMemoryDatabase() interfaces.IDatabase {
-	return NewInMemoryDatabase()
+	db, _ := NewInMemoryDatabase()
+
+	return db
 }
 
 func setupSQLiteDatabase() interfaces.IDatabase {

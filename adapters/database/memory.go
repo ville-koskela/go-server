@@ -16,13 +16,13 @@ type InMemoryDatabase struct {
 	mu        sync.Mutex
 }
 
-func NewInMemoryDatabase() *InMemoryDatabase {
+func NewInMemoryDatabase() (*InMemoryDatabase, error) {
 	return &InMemoryDatabase{
 		posts:     make(map[int64]models.Post),
 		comments:  make(map[int64][]models.Comment),
 		postID:    0,
 		commentID: 0,
-	}
+	}, nil
 }
 
 func (db *InMemoryDatabase) SavePost(post *models.Post) (models.Post, error) {
