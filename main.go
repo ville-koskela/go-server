@@ -17,8 +17,9 @@ func main() {
 
     // initialize use-cases
     createPost := usecases.NewCreatePostUseCase(db)
+    listPosts := usecases.NewListPostsUseCase(db)
 
-    http.HandleFunc("/posts", routes.Posts(createPost))
+    http.HandleFunc("/posts", routes.Posts(createPost, listPosts))
 
     fmt.Printf("Starting server on port %v\n", port)
     http.ListenAndServe(fmt.Sprintf(":%v", port), nil)

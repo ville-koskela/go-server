@@ -9,7 +9,7 @@ import (
     "web1/domain/models"
 )
 
-func Posts(createPost *usecases.CreatePostUseCase) http.HandlerFunc {
+func Posts(createPost *usecases.CreatePostUseCase, listPosts *usecases.ListPostsUseCase) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
 
         if r.Method == http.MethodPost {
@@ -37,5 +37,18 @@ func Posts(createPost *usecases.CreatePostUseCase) http.HandlerFunc {
             w.WriteHeader(http.StatusCreated)
             json.NewEncoder(w).Encode(post)
         }
+
+				if r.Method == http.MethodGet {
+						posts, err := listPosts.Execute()
+
+						if err != nil {
+								http.Error(w, "Error listing posts", http.StatusInternalServerError)
+								return
+						}
+
+						w.Header().Set("Content-Type", "application/json")
+						w.WriteHeader(http.StatusOK)
+						json.NewEncoder(w).Encode(posts)
+				}
     }
 }
