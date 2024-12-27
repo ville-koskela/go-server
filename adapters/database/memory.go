@@ -2,24 +2,25 @@ package database
 
 import (
 	"errors"
+	"sort"
 	"sync"
 
 	"web1/domain/models"
 )
 
 type InMemoryDatabase struct {
-	posts     map[int64]models.Post
-	comments  map[int64][]models.Comment
-	postID    int64
+	posts    map[int64]models.Post
+	comments map[int64][]models.Comment
+	postID   int64
 	commentID int64
-	mu        sync.Mutex
+	mu       sync.Mutex
 }
 
 func NewInMemoryDatabase() *InMemoryDatabase {
 	return &InMemoryDatabase{
-		posts:     make(map[int64]models.Post),
-		comments:  make(map[int64][]models.Comment),
-		postID:    0,
+		posts:    make(map[int64]models.Post),
+		comments: make(map[int64][]models.Comment),
+		postID:   0,
 		commentID: 0,
 	}
 }
@@ -40,6 +41,9 @@ func (db *InMemoryDatabase) ListPosts() ([]models.Post, error) {
 	for _, post := range db.posts {
 		posts = append(posts, post)
 	}
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[i].ID > posts[j].ID
+	})
 	return posts, nil
 }
 
@@ -67,7 +71,7 @@ func (db *InMemoryDatabase) ListComments(postID int64) ([]models.Comment, error)
 	defer db.mu.Unlock()
 	comments, exists := db.comments[postID]
 	if !exists {
-		return nil, errors.New("no comments for this post")
+		return nil, nil
 	}
 	return comments, nil
 }
