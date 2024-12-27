@@ -6,21 +6,24 @@ import (
 	"net/http"
 
 	"web1/domain/models"
-	"web1/domain/use-cases"
 )
 
-func Comments(createComment *usecases.CreateCommentUseCase) http.HandlerFunc {
+type CommentsUseCase interface {
+	CreateComment(comment *models.Comment) (models.Comment, error)
+}
+
+func Comments(usecases CommentsUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
-			handleNewCommentRequest(w, r, createComment)
+			handleNewCommentRequest(w, r, usecases)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	}
 }
 
-func handleNewCommentRequest(w http.ResponseWriter, r *http.Request, createComment *usecases.CreateCommentUseCase) {
+func handleNewCommentRequest(w http.ResponseWriter, r *http.Request, usecases CommentsUseCase) {
 	var c models.Comment
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -34,7 +37,7 @@ func handleNewCommentRequest(w http.ResponseWriter, r *http.Request, createComme
 		return
 	}
 
-	comment, err := createComment.Execute(&c)
+	comment, err := usecases.CreateComment(&c)
 	if err != nil {
 		http.Error(w, "Error saving comment", http.StatusInternalServerError)
 		return

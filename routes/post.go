@@ -6,10 +6,13 @@ import (
 	"strconv"
 
 	"web1/domain/models"
-	"web1/domain/use-cases"
 )
 
-func Post(getPost *usecases.GetPostUseCase) http.HandlerFunc {
+type PostUseCases interface {
+	GetPost(id int64) (models.Post, []models.Comment, error)
+}
+
+func Post(usecases PostUseCases) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.ParseInt(r.URL.Path[7:], 10, 64)
@@ -21,16 +24,16 @@ func Post(getPost *usecases.GetPostUseCase) http.HandlerFunc {
 
 		switch r.Method {
 		case http.MethodGet:
-			handleGetPostByIdRequest(w, id, getPost)
+			handleGetPostByIdRequest(w, id, usecases)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	}
 }
 
-func handleGetPostByIdRequest(w http.ResponseWriter, id int64, getPost *usecases.GetPostUseCase) {
+func handleGetPostByIdRequest(w http.ResponseWriter, id int64, usecases PostUseCases) {
 
-	post, comments, err := getPost.Execute(id)
+	post, comments, err := usecases.GetPost(id)
 	if err != nil {
 		http.Error(w, "Post not found", http.StatusNotFound)
 		return

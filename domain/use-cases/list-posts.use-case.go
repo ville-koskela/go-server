@@ -6,16 +6,8 @@ import (
 	"web1/domain/models"
 )
 
-type ListPostsUseCase struct {
-	db Database
-}
-
-func NewListPostsUseCase(db Database) *ListPostsUseCase {
-	return &ListPostsUseCase{db: db}
-}
-
-func (listPosts *ListPostsUseCase) Execute() ([]models.Post, error) {
-	posts, err := listPosts.db.ListPosts()
+func (uc *UseCases) ListPosts() ([]models.Post, error) {
+	posts, err := uc.db.ListPosts()
 
 	if err != nil {
 		return nil, errors.New("Error listing posts")

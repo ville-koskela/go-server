@@ -17,15 +17,12 @@ func main() {
 	db := database.InitializeDatabase(env)
 
 	// initialize use-cases
-	createPost := usecases.NewCreatePostUseCase(db)
-	listPosts := usecases.NewListPostsUseCase(db)
-	getPost := usecases.NewGetPostUseCase(db)
-	createComment := usecases.NewCreateCommentUseCase(db)
+	usecases := usecases.NewUseCases(db)
 
 	// create routes
-	http.HandleFunc("/posts", routes.Posts(createPost, listPosts))
-	http.HandleFunc("/posts/", routes.Post(getPost))
-	http.HandleFunc("/comments", routes.Comments(createComment))
+	http.HandleFunc("/posts", routes.Posts(usecases))
+	http.HandleFunc("/posts/", routes.Post(usecases))
+	http.HandleFunc("/comments", routes.Comments(usecases))
 
 	port := env.GetServerPort()
 	fmt.Printf("Starting server on port %v\n", port)

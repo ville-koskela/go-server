@@ -6,26 +6,27 @@ import (
 	"net/http"
 
 	"web1/domain/models"
-	"web1/domain/use-cases"
 )
 
-func Posts(
-	createPost *usecases.CreatePostUseCase,
-	listPosts *usecases.ListPostsUseCase,
-) http.HandlerFunc {
+type PostsUseCases interface {
+	CreatePost(post *models.Post) (models.Post, error)
+	ListPosts() ([]models.Post, error)
+}
+
+func Posts(usecases PostsUseCases) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			handleListCommentsRequest(w, listPosts)
+			handleListCommentsRequest(w, usecases)
 		case http.MethodPost:
-			handleNewPostRequest(w, r, createPost)
+			handleNewPostRequest(w, r, usecases)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	}
 }
 
-func handleNewPostRequest(w http.ResponseWriter, r *http.Request, createPost *usecases.CreatePostUseCase) {
+func handleNewPostRequest(w http.ResponseWriter, r *http.Request, usecases PostsUseCases) {
 	var p models.Post
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -39,7 +40,7 @@ func handleNewPostRequest(w http.ResponseWriter, r *http.Request, createPost *us
 		return
 	}
 
-	post, err := createPost.Execute(&p)
+	post, err := usecases.CreatePost(&p)
 	if err != nil {
 		http.Error(w, "Error saving post", http.StatusInternalServerError)
 		return
@@ -50,8 +51,8 @@ func handleNewPostRequest(w http.ResponseWriter, r *http.Request, createPost *us
 	json.NewEncoder(w).Encode(post)
 }
 
-func handleListCommentsRequest(w http.ResponseWriter, listPosts *usecases.ListPostsUseCase) {
-	posts, err := listPosts.Execute()
+func handleListCommentsRequest(w http.ResponseWriter, usecases PostsUseCases) {
+	posts, err := usecases.ListPosts()
 
 	if err != nil {
 		http.Error(w, "Error listing posts", http.StatusInternalServerError)
