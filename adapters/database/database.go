@@ -9,6 +9,11 @@ type Database interface {
 	Close() error
 }
 
+type Env interface {
+	GetDBType() string
+	GetDBPath() string
+}
+
 func InitializeDatabase(env Env) Database {
 	switch env.GetDBType() {
 	case "inmemory":
