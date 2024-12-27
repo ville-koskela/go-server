@@ -10,9 +10,6 @@ import (
     "web1/domain/models"
     "web1/domain/use-cases"
 )
-    //"log"
-    //"strconv"
-    //"sync"
 
 func main() {
     port := 8080

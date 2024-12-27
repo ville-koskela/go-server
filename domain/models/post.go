@@ -1,7 +1,7 @@
-package models 
+package models
 
 type Post struct {
-	ID		 	 int			 `json:"id"`
-	Nick	   string 	 `json:"nick"`
-	Content  string  	 `json:"content"`
+    ID      int    `json:"id"`
+    Nick    string `json:"nick"`
+    Content string `json:"content"`
 }
